@@ -100,8 +100,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
   <div v-if="!openChatMobile" class="fixed bottom-6 right-6 z-40 md:hidden">
     <Button
       @click="openChatMobile = true"
-      class="h-14 w-14 rounded-full shadow-lg"
-      style="background-color: #F18E52"
+      class="h-14 w-14 rounded-full shadow-lg btn-chat-trigger"
     >
       <MessageCircle class="size-6 text-white" />
     </Button>
@@ -204,7 +203,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
     <SidebarHeader>
       <div class="flex flex-col gap-2">
         <div class="flex items-center gap-3">
-          <MessageCircle class="size-6" style="color: #F18E52" />
+          <MessageCircle class="size-6 icon-primary" />
           <h1 class="text-lg font-bold text-gray-900 dark:text-white">BandurrIA</h1>
         </div>
         <p class="text-sm italic text-gray-700 dark:text-gray-300 ml-9">Obtén sugerencias personalizadas</p>
@@ -221,7 +220,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
           @click="selectQuickIdea(idea)"
           class="p-2 rounded-lg border border-border bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-left cursor-pointer flex items-start gap-2"
         >
-          <component :is="idea.icon" class="size-4 flex-shrink-0 mt-0.5" style="color: #F18E52" />
+          <component :is="idea.icon" class="size-4 flex-shrink-0 mt-0.5 icon-primary" />
           <div class="flex-1 min-w-0">
             <div class="font-medium text-xs text-gray-900 dark:text-white truncate">{{ idea.title }}</div>
             <div class="text-xs text-gray-600 dark:text-gray-400 mt-0.5 line-clamp-2">{{ idea.description }}</div>
@@ -242,17 +241,14 @@ const handleKeyPress = (e: KeyboardEvent) => {
         <div v-for="message in messages" :key="message.id" class="flex gap-2 px-2">
           <!-- User Message -->
           <div v-if="message.type === 'user'" class="flex justify-end w-full">
-            <div
-              class="max-w-xs px-3 py-2 rounded-2xl text-white text-sm"
-              style="background-color: #F18E52"
-            >
+            <div class="max-w-xs px-3 py-2 rounded-2xl text-white text-sm chat-user-message">
               {{ message.content }}
             </div>
           </div>
           
           <!-- Bot Message -->
           <div v-else class="flex justify-start w-full">
-            <div class="max-w-xs px-3 py-2 rounded-2xl bg-slate-200 dark:bg-slate-700 text-gray-900 dark:text-white text-sm">
+            <div class="max-w-xs px-3 py-2 rounded-2xl chat-bot-message">
               {{ message.content }}
             </div>
           </div>
@@ -273,8 +269,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
         <button
           @click="sendMessage"
           :disabled="!inputValue.trim()"
-          class="px-3 py-2 rounded-lg text-white font-medium transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center h-fit self-end"
-          style="background-color: #F18E52"
+          class="px-3 py-2 rounded-lg text-white font-medium transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center h-fit self-end btn-chat-send"
         >
           <Send class="size-4" />
         </button>
@@ -284,9 +279,57 @@ const handleKeyPress = (e: KeyboardEvent) => {
 </template>
 
 <style scoped>
+/* ============================================================================
+   ESTILOS DEL CHAT - BandurriaSidebar
+   
+   Este componente utiliza variables CSS del archivo main.css para mantener
+   consistencia con el diseño general. Los colores pueden modificarse en:
+   src/assets/main.css
+   
+   Clases CSS disponibles:
+   - .btn-chat-trigger: Botón flotante para abrir chat en mobile
+   - .chat-user-message: Estilos para mensajes del usuario
+   - .chat-bot-message: Estilos para mensajes del bot
+   - .btn-chat-send: Botón para enviar mensajes
+   ============================================================================ */
+
+/* Botón flotante para abrir chat (mobile) */
+.btn-chat-trigger {
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  box-shadow: var(--shadow-heavy);
+}
+
+.btn-chat-trigger:hover {
+  opacity: var(--button-hover-opacity);
+}
+
+/* Mensajes del usuario - fondo naranja */
+.chat-user-message {
+  background-color: var(--chat-user-bg);
+  color: var(--chat-user-text);
+}
+
+/* Mensajes del bot - fondo gris */
+.chat-bot-message {
+  background-color: var(--chat-bot-bg);
+  color: var(--chat-bot-text);
+}
+
+/* Botón para enviar mensajes */
+.btn-chat-send {
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+}
+
+.btn-chat-send:hover:not(:disabled) {
+  opacity: var(--button-hover-opacity);
+}
+
+/* Textarea del chat - enfoque */
 .chat-textarea:focus {
-  box-shadow: 0 0 0 3px rgba(241, 142, 82, 0.1);
-  border-color: #F18E52;
+  box-shadow: 0 0 0 3px var(--chat-button-hover);
+  border-color: var(--chat-input-border);
 }
 
 ::-webkit-scrollbar {

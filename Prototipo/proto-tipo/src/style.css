@@ -13,6 +13,59 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* Colores primarios (naranja) */
+  --color-primary: #F18E52;
+  --color-primary-light: #FCB88F;
+  --color-primary-dark: #E67A35;
+  --color-secondary: #CEA32C;
+  --color-tertiary: #E2CE9C;
+  --color-quaternary: #784A27;
+  
+  /* Light mode - Fondos y textos */
+  --bg-color: #FFFFFF;
+  --bg-color-secondary: #F5F5F5;
+  --text-color: #000000;
+  --text-color-secondary: #666666;
+  --text-color-muted: #999999;
+  --border-color: #E0E0E0;
+  
+  /* Chat colors */
+  --chat-bg: #FFFFFF;
+  --chat-user-bg: #F18E52;
+  --chat-user-text: #FFFFFF;
+  --chat-bot-bg: #E8E8E8;
+  --chat-bot-text: #333333;
+  --chat-input-border: #F18E52;
+  --chat-button-hover: rgba(241, 142, 82, 0.1);
+  
+  /* Dashboard colors */
+  --chart-bar-color: #F18E52;
+  --metric-growth-bg: #FEF3E2;
+  --metric-growth-icon: #F18E52;
+  --metric-milestone-bg: #EFF6FF;
+  --metric-milestone-icon: #3B82F6;
+  
+  /* Icons */
+  --icon-primary: #F18E52;
+  --icon-secondary: #3B82F6;
+  --icon-accent: #10B981;
+  
+  /* Buttons */
+  --button-primary-bg: #F18E52;
+  --button-primary-text: #FFFFFF;
+  --button-hover-opacity: 0.9;
+  --button-disabled-opacity: 0.5;
+  
+  /* Effects */
+  --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-heavy: 0 10px 25px rgba(0, 0, 0, 0.2);
+  --overlay-dark: rgba(0, 0, 0, 0.5);
+  --transition-base: 0.25s ease;
+  --transition-fast: 0.15s ease;
+  --transition-slow: 0.5s ease;
+  
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -112,9 +165,24 @@ button:focus-visible {
   }
 }
 
+/* Dark mode */
+.dark, [data-theme="dark"] {
+  --bg-color: #1B1B1B;
+  --bg-color-secondary: #2D2D2D;
+  --text-color: #FFFFFF;
+  --text-color-secondary: #B0B0B0;
+  --text-color-muted: #666666;
+  --border-color: #404040;
+  --chat-bg: #1B1B1B;
+  --chat-bot-bg: #2D2D2D;
+  --chat-bot-text: #E0E0E0;
+}
+
 @import "tailwindcss";
 
 @import "tw-animate-css";
+
+@import "./assets/main.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -197,4 +265,17 @@ button:focus-visible {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Clases reutilizables para iconos */
+.icon-primary {
+  color: var(--icon-primary);
+}
+
+.icon-secondary {
+  color: var(--icon-secondary);
+}
+
+.icon-accent {
+  color: var(--icon-accent);
 }

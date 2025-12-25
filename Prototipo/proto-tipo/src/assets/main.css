@@ -1,23 +1,153 @@
+/* ============================================================================
+   SISTEMA DE COLORES Y ESTILOS CENTRALIZADO - T-Radar Dashboard
+   ============================================================================
+   
+   Este archivo contiene todas las definiciones de colores y estilos base
+   para la aplicación T-Radar. Los cambios aquí afectarán a toda la app.
+   
+   ESTRUCTURA:
+   - Colores primarios (marca)
+   - Colores secundarios y acentos
+   - Colores de fondo y texto
+   - Colores para componentes específicos
+   - Estilos de componentes reutilizables
+   
+   ============================================================================ */
+
 :root {
-  --color-primary:  #F18E52;
-  --color-secondary:#CEA32C;
-  --color-tertiary: #E2CE9C;
-  --color-quaternary:#784A27;
-
-  /* Light mode por defecto */
-  --bg-color:   #FFFFFF;
-  --text-color: #000000;
+  /* ========================================================================
+     COLORES PRIMARIOS - Identidad visual de T-Radar
+     Estos colores se usan en botones, iconos principales y elementos destacados
+     ======================================================================== */
+  --color-primary: #F18E52;           /* Naranja principal (botones, iconos primarios) */
+  --color-primary-light: #FCB88F;     /* Naranja claro (hover states) */
+  --color-primary-dark: #E67A35;      /* Naranja oscuro (active states) */
+  
+  /* ========================================================================
+     COLORES SECUNDARIOS
+     Colores de apoyo para jerarquía visual
+     ======================================================================== */
+  --color-secondary: #CEA32C;         /* Dorado secundario */
+  --color-tertiary: #E2CE9C;          /* Beige/crema */
+  --color-quaternary: #784A27;        /* Marrón oscuro */
+  
+  /* ========================================================================
+     COLORES DE FONDO Y TEXTO - Light Mode
+     Se aplican por defecto (tema claro)
+     ======================================================================== */
+  --bg-color: #FFFFFF;                /* Fondo principal blanco */
+  --bg-color-secondary: #F5F5F5;      /* Fondo secundario gris claro */
+  --text-color: #000000;              /* Texto principal negro */
+  --text-color-secondary: #666666;    /* Texto secundario gris */
+  --text-color-muted: #999999;        /* Texto deshabilitado */
+  --border-color: #E0E0E0;            /* Bordes en modo claro */
+  
+  /* ========================================================================
+     COLORES PARA COMPONENTES - Chat (BandurriaSidebar, BandurriaChat)
+     Afecta a: BandurriaSidebar.vue, BandurriaChat.vue
+     ======================================================================== */
+  --chat-bg: #FFFFFF;                 /* Fondo del chat */
+  --chat-user-bg: #F18E52;            /* Fondo mensajes del usuario (naranja primario) */
+  --chat-user-text: #FFFFFF;          /* Texto mensajes del usuario (blanco) */
+  --chat-bot-bg: #E8E8E8;             /* Fondo mensajes del bot (gris claro) */
+  --chat-bot-text: #333333;           /* Texto mensajes del bot */
+  --chat-input-border: #F18E52;       /* Color del borde al focus en textarea */
+  --chat-button-hover: rgba(241, 142, 82, 0.1); /* Color del shadow focus en textarea */
+  
+  /* ========================================================================
+     COLORES PARA COMPONENTES - Dashboard (Paneles.vue)
+     Afecta a: Paneles.vue (gráficos, tarjetas, métricas)
+     ======================================================================== */
+  --chart-bar-color: #F18E52;         /* Color de las barras del gráfico semanal */
+  --metric-growth-bg: #FEF3E2;        /* Fondo tarjeta de crecimiento (naranja claro) */
+  --metric-growth-icon: #F18E52;      /* Ícono de crecimiento */
+  --metric-milestone-bg: #EFF6FF;     /* Fondo tarjeta de hitos (azul claro) */
+  --metric-milestone-icon: #3B82F6;   /* Ícono de hitos */
+  
+  /* ========================================================================
+     COLORES PARA ICONOS
+     Afecta a: Iconos en Paneles.vue, BandurriaSidebar.vue
+     ======================================================================== */
+  --icon-primary: #F18E52;            /* Iconos primarios (naranja) */
+  --icon-secondary: #3B82F6;          /* Iconos secundarios (azul) */
+  --icon-accent: #10B981;             /* Iconos de acento (verde) */
+  
+  /* ========================================================================
+     COLORES PARA BOTONES Y CONTROLES
+     Afecta a: Botones flotantes, buttons en mobile
+     ======================================================================== */
+  --button-primary-bg: #F18E52;       /* Botón primario fondo */
+  --button-primary-text: #FFFFFF;     /* Botón primario texto */
+  --button-hover-opacity: 0.9;        /* Opacidad en hover */
+  --button-disabled-opacity: 0.5;     /* Opacidad cuando deshabilitado */
+  
+  /* ========================================================================
+     ESTILOS DE SOMBRAS Y EFECTOS
+     Afecta a: Capas, modal overlays, elementos flotantes
+     ======================================================================== */
+  --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-heavy: 0 10px 25px rgba(0, 0, 0, 0.2);
+  --overlay-dark: rgba(0, 0, 0, 0.5);  /* Overlay semi-transparente */
+  
+  /* ========================================================================
+     ESTILOS DE TRANSICIÓN
+     Afecta a: Animaciones suaves en toda la app
+     ======================================================================== */
+  --transition-base: 0.25s ease;
+  --transition-fast: 0.15s ease;
+  --transition-slow: 0.5s ease;
 }
 
+/* ============================================================================
+   MODO OSCURO
+   Se activa cuando se añade class="dark" o data-theme="dark"
+   Afecta a: Todos los componentes con clases dark:*
+   ============================================================================ */
 [data-theme="dark"] {
-  --bg-color:   #1B1B1B;
-  --text-color: #ffffff;
+  /* Colores de fondo para modo oscuro */
+  --bg-color: #1B1B1B;                /* Fondo principal oscuro */
+  --bg-color-secondary: #2D2D2D;      /* Fondo secundario gris oscuro */
+  --text-color: #FFFFFF;              /* Texto principal blanco */
+  --text-color-secondary: #B0B0B0;    /* Texto secundario gris claro */
+  --text-color-muted: #666666;        /* Texto deshabilitado gris */
+  --border-color: #404040;            /* Bordes en modo oscuro */
+  
+  /* Colores del chat en modo oscuro */
+  --chat-bg: #1B1B1B;
+  --chat-bot-bg: #2D2D2D;
+  --chat-bot-text: #E0E0E0;
 }
 
+/* ============================================================================
+   ESTILOS BASE DEL BODY
+   ============================================================================ */
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
   font-family: 'Open Sans', system-ui, -apple-system, BlinkMacSystemFont,
     'Segoe UI', sans-serif;
+  transition: background-color var(--transition-base), 
+              color var(--transition-base);
+}
+
+/* ============================================================================
+   CLASES REUTILIZABLES - Iconos
+   ============================================================================ */
+
+/* Icono primario (naranja) */
+/* Afecta a: Iconos en BandurriaSidebar, Paneles, Barra2, etc */
+.icon-primary {
+  color: var(--icon-primary);
+}
+
+/* Icono secundario (azul) */
+.icon-secondary {
+  color: var(--icon-secondary);
+}
+
+/* Icono de acento (verde) */
+.icon-accent {
+  color: var(--icon-accent);
 }
 

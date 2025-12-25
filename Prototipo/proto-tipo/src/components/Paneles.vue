@@ -34,7 +34,7 @@ const maxEngagement = Math.max(...weeklyData.map(d => d.engagement))
             <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Tu alcance aumentó esta semana</p>
           </div>
           <div class="p-3 bg-orange-200 dark:bg-orange-900 rounded-lg">
-            <TrendingUp class="size-6" style="color: #F18E52" />
+            <TrendingUp class="size-6 icon-primary" />
           </div>
         </div>
       </div>
@@ -144,10 +144,9 @@ const maxEngagement = Math.max(...weeklyData.map(d => d.engagement))
           <div v-for="data in weeklyData" :key="data.day" class="flex-1 flex flex-col items-center justify-end gap-2">
             <!-- Barra -->
             <div
-              class="w-full rounded-t-lg transition-all hover:opacity-80 cursor-pointer"
+              class="w-full rounded-t-lg transition-all hover:opacity-80 cursor-pointer chart-bar"
               :style="{
                 height: `${(data.engagement / maxEngagement) * 180}px`,
-                backgroundColor: '#F18E52',
               }"
               :title="`${data.day}: ${data.engagement}%`"
             />
@@ -169,7 +168,7 @@ const maxEngagement = Math.max(...weeklyData.map(d => d.engagement))
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         <div v-for="i in 6" :key="i" class="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-slate-800 dark:to-slate-700 rounded-xl p-6 border border-indigo-200 dark:border-indigo-900">
           <div class="flex items-center gap-3 mb-3">
-            <Hash class="size-5" style="color: #F18E52" />
+            <Hash class="size-5 icon-primary" />
             <span class="font-semibold text-gray-900 dark:text-white">#TrendingTopic{{ i }}</span>
           </div>
           <p class="text-sm text-gray-600 dark:text-gray-400">12.5K menciones</p>
@@ -181,5 +180,28 @@ const maxEngagement = Math.max(...weeklyData.map(d => d.engagement))
 </template>
 
 <style scoped>
+/* ============================================================================
+   ESTILOS DEL DASHBOARD - Paneles.vue
+   
+   Este componente utiliza variables CSS del archivo main.css para mantener
+   consistencia con el diseño general. Los colores pueden modificarse en:
+   src/assets/main.css
+   
+   Clases CSS disponibles:
+   - .chart-bar: Barras del gráfico de engagement semanal
+   - .icon-primary: Iconos principales en cards y métricas
+   ============================================================================ */
+
+/* Barras del gráfico de engagement semanal */
+/* Afecta a: Sección "Engagement Semanal" */
+.chart-bar {
+  background-color: var(--chart-bar-color);
+}
+
+.chart-bar:hover {
+  opacity: 0.8;
+}
+
 /* Smooth transitions */
 </style>
+
