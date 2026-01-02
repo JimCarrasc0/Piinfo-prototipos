@@ -1,0 +1,35 @@
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtualenv
+.venv
+venv
+env
+
+# Git
+.git
+.gitignore
+
+# Dev / testing
+tests
+notebooks
+ml
+workflows
+
+# Build / cache
+*.egg-info
+dist
+build
+
+# OS / IDE
+.vscode
+.idea
+.DS_Store
+
+# Misc
+prueba.py
+tempHash.py

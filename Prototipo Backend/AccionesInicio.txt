@@ -1,0 +1,4 @@
+1ero: Crear una base de datos en postgres llamada T-Radar
+
+Para correr la app (yo la corro con python en un venv): 
+    python -m uvicorn app.main:app --reload --port 8000
