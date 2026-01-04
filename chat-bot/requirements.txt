@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+sqlite-utils
+sentence-transformers
+numpy
+loguru
+tf-keras
+einops
+openai
