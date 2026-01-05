@@ -7,6 +7,8 @@ from app.api.chat import router as chat_router      # Router con endpoints del c
 from app.api.health import router as health_router  # Router de health check
 from app.utils.logger import get_logger             # Logger centralizado
 
+from app.api import posts, metrics, comments
+
 logger = get_logger("main")                         # Logger específico del módulo principal
 
 # Instancia principal de la API
@@ -27,6 +29,9 @@ app.add_middleware(
 
 app.include_router(health_router, prefix="/health", tags=["health"])    # Endpoint de estado del sistema
 app.include_router(chat_router, prefix="/chat", tags=["chat"])          # Endpoint principal del chatbot
+app.include_router(posts.router)
+app.include_router(metrics.router)
+app.include_router(comments.router)
 
 """
 DESCRIPCIÓN: Se ejecuta automáticamente al iniciar el backend

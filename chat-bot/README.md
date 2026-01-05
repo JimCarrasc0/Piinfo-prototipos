@@ -161,3 +161,174 @@ Tablas principales: posts, meta_metrics, meta_comments, messages, embeddings
 ### Poblar datos de prueba
 
 Para cargar datos dummy: python -m scripts.seed_dummy_data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## API de Publicaciones (Posts)
+
+### Crear publicación
+
+POST /posts
+
+Request JSON
+
+{
+  "post_id": "post_001",
+  "platform": "instagram",
+  "caption": "Descuento por tiempo limitado",
+  "created_at": "2026-01-03T12:00:00"
+}
+
+Campos
+
+post_id (string): Identificador único del post.
+Ejemplo: "post_001", "ig_984312"
+
+platform (string): origen
+
+caption (string): Texto o descripción de la publicación.
+
+created_at (opcional): Fecha de creación en formato ISO 8601 (Si no se envía, se genera automáticamente).
+
+### Listar publicaciones
+
+GET /posts
+
+### Actualizar publicación
+
+PUT /posts/{post_id}
+
+Request JSON
+
+{
+  "caption": "Nuevo descuento especial"
+}
+
+Campos opcionales, solo se actualizan los enviados.
+
+### Eliminar publicación
+
+DELETE /posts/{post_id}
+
+## API de Métricas
+
+### Crear métrica
+
+POST /metrics
+
+Request JSON
+
+{
+    "post_id": "post_001",
+    "metric_name": "engagement",
+    "period": "day",
+    "value": 0.34
+    "end_time": "2026-01-02T08:35:35.295979"
+}
+
+Campos
+
+post_id (string): ID del post asociado.
+
+metric_name (string): Nombre de la métrica.
+
+    Valores comunes: "likes", "comments", "shares", "reach", "impressions", "engagement"
+
+period (string): en que periodo se hizo
+
+value (float): Valor numérico de la métrica.
+
+end_time (datetime): fecha
+
+### Listar métricas
+
+GET /metrics
+
+### Actualizar métrica
+
+PUT /metrics/{metric_id}
+
+Request JSON
+
+{
+  "value": 0.42
+}
+
+### Eliminar métrica
+
+DELETE /metrics/{metric_id}
+
+## API de Comentarios
+
+### Crear comentario
+
+POST /comments
+
+Request JSON
+
+{
+  "post_id": "post_001",
+  "comment_id": "c1",
+  "text": "Muy buena oferta",
+  "sentiment": "positivo"
+  "timestamp": "2026-01-02T08:35:35.295979"
+}
+
+Campos
+
+post_id (string): ID del post asociado.
+
+comment_id (string): ID del comentario.
+
+text (string): Contenido del comentario.
+
+sentiment (string) (opcional): Clasificación de sentimiento.
+
+Valores permitidos: "positivo", "neutral", "negativo", 
+
+timestamp (datetime): fecha de cuando se hizo
+
+### Listar comentarios
+
+GET /comments
+
+### Actualizar comentario
+
+PUT /comments/{comment_id}
+
+Request JSON
+
+{
+  "text": "Buen precio pero esperaba más",
+  "sentiment": "neutral"
+}
+
+Todos los campos son opcionales (pero idealmente incorporarlos).
+
+### Eliminar comentario
+
+DELETE /comments/{comment_id}
