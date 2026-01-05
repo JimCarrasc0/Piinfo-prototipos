@@ -1,0 +1,30 @@
+# Imagen base ligera con Python
+FROM python:3.10-slim
+
+# Evita prompts interactivos y logs raros
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Dependencias del sistema (mínimas)
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar requirements e instalar dependencias Python
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar el resto del proyecto
+COPY . .
+
+# Crear carpeta para datos persistentes (DB, cache, modelos)
+RUN mkdir -p /app/data
+
+# Exponer el puerto de FastAPI
+EXPOSE 8000
+
+# Comando de arranque (ASGI server)
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
