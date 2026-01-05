@@ -162,46 +162,20 @@ Tablas principales: posts, meta_metrics, meta_comments, messages, embeddings
 
 Para cargar datos dummy: python -m scripts.seed_dummy_data
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## API de Publicaciones (Posts)
 
 ### Crear publicación
 
 POST /posts
 
-Request JSON
+Request JSON:
 
-{
-  "post_id": "post_001",
-  "platform": "instagram",
-  "caption": "Descuento por tiempo limitado",
-  "created_at": "2026-01-03T12:00:00"
-}
+  {
+    "post_id": "post_001",
+    "platform": "instagram",
+    "caption": "Descuento por tiempo limitado",
+    "created_at": "2026-01-03T12:00:00"
+  }
 
 Campos
 
@@ -222,11 +196,11 @@ GET /posts
 
 PUT /posts/{post_id}
 
-Request JSON
+Request JSON:
 
-{
-  "caption": "Nuevo descuento especial"
-}
+  {
+    "caption": "Nuevo descuento especial"
+  }
 
 Campos opcionales, solo se actualizan los enviados.
 
@@ -240,15 +214,15 @@ DELETE /posts/{post_id}
 
 POST /metrics
 
-Request JSON
+Request JSON:
 
-{
+  {
     "post_id": "post_001",
     "metric_name": "engagement",
     "period": "day",
     "value": 0.34
     "end_time": "2026-01-02T08:35:35.295979"
-}
+  }
 
 Campos
 
@@ -272,11 +246,11 @@ GET /metrics
 
 PUT /metrics/{metric_id}
 
-Request JSON
+Request JSON:
 
-{
-  "value": 0.42
-}
+  {
+    "value": 0.42
+  }
 
 ### Eliminar métrica
 
@@ -288,15 +262,15 @@ DELETE /metrics/{metric_id}
 
 POST /comments
 
-Request JSON
+Request JSON:
 
-{
-  "post_id": "post_001",
-  "comment_id": "c1",
-  "text": "Muy buena oferta",
-  "sentiment": "positivo"
-  "timestamp": "2026-01-02T08:35:35.295979"
-}
+  {
+    "post_id": "post_001",
+    "comment_id": "c1",
+    "text": "Muy buena oferta",
+    "sentiment": "positivo"
+    "timestamp": "2026-01-02T08:35:35.295979"
+  }
 
 Campos
 
@@ -320,12 +294,12 @@ GET /comments
 
 PUT /comments/{comment_id}
 
-Request JSON
+Request JSON:
 
-{
-  "text": "Buen precio pero esperaba más",
-  "sentiment": "neutral"
-}
+  {
+    "text": "Buen precio pero esperaba más",
+    "sentiment": "neutral"
+  }
 
 Todos los campos son opcionales (pero idealmente incorporarlos).
 
