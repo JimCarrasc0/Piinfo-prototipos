@@ -33,6 +33,6 @@ def login_access_token(
 
     # 2. Crear y devolver el token
     return {
-        "access_token": create_access_token(subject=str(user.id_user)), 
+        "access_token": create_access_token(subject=str(user.id)), 
         "token_type": "bearer",
     }

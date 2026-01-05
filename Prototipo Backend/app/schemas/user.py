@@ -1,14 +1,17 @@
 from pydantic import BaseModel, EmailStr
+from uuid import UUID
 from typing import Optional
+from datetime import datetime
 
 class UserBase(BaseModel):
     email: EmailStr
     nombre: Optional[str] = None
     activo: Optional[bool] = True
-    url_icono: Optional[str] = None
-
-class UserCreate(UserBase):
-    password: str # Contraseña requerida al crear
+    
+class UserCreate(BaseModel):
+    nombre: str
+    email: EmailStr
+    password: str
 
 class UserUpdate(BaseModel):
     # Todos los campos opcionales para actualizar
@@ -16,11 +19,12 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     password: Optional[str] = None 
     activo: Optional[bool] = None
-    url_icono: Optional[str] = None
 
 class User(UserBase):
-    id_user: int
-
+    id: UUID
+    email: EmailStr
+    created_at: Optional[datetime]
+    
     class Config:
         from_attributes = True
 
