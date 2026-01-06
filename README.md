@@ -17,11 +17,27 @@ bash docker-start.sh
 ```
 
 **Esto inicia**:
-- ✅ Frontend: http://localhost:5173
-- ✅ Backend: http://localhost:8000
+- ✅ Frontend: http://localhost:5173 (~5 seg)
+- ✅ Backend: http://localhost:8000 (~5 seg)
 - ✅ Documentación API: http://localhost:8000/docs
 
-Para más detalles, ver [DOCKER_SETUP.md](DOCKER_SETUP.md)
+### Cargar Datos de Prueba (Opcional)
+
+Si necesitas datos de prueba en la base de datos:
+
+**Windows**:
+```shell
+run-seed.bat
+```
+
+**macOS / Linux**:
+```shell
+bash run-seed.sh
+```
+
+> **Nota**: Esto tarda 1-2 minutos la primera vez (descarga modelo de embeddings)
+
+Para más detalles, ver [DOCKER_SETUP.md](DOCKER_SETUP.md) y [DOCKER_SEED_FIX.md](DOCKER_SEED_FIX.md)
 
 ---
 

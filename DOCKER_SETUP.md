@@ -8,7 +8,11 @@ Este documento explica cómo ejecutar toda la plataforma usando Docker y docker-
 
 ```
 piinfo-prototipos/
-├── docker-compose.yml          ← Orquestación completa
+├── docker-compose.yml          ← Orquestación (Frontend + Backend)
+├── docker-start.sh             ← Script inicio (Linux/macOS)
+├── docker-start.bat            ← Script inicio (Windows)
+├── run-seed.sh                 ← Cargar datos de prueba (Linux/macOS)
+├── run-seed.bat                ← Cargar datos de prueba (Windows)
 ├── chat-bot/
 │   ├── Dockerfile              ← Backend FastAPI
 │   └── docker-compose.yml      ← (legado) docker-compose local
@@ -43,10 +47,26 @@ tradar-chatbot        | Uvicorn running on http://0.0.0.0:8000
 proto-tipo-frontend   | nginx: master process started
 ```
 
+**Tiempo de startup**: ~10-15 segundos
+
 Luego accede:
 - 🌐 **Frontend**: http://localhost:5173
 - 🤖 **Backend Docs**: http://localhost:8000/docs
 - 🏥 **Backend Health**: http://localhost:8000/health
+
+### Opción 1b: Cargar Datos de Prueba (Opcional)
+
+Si quieres datos de prueba en la base de datos:
+
+```bash
+# Windows
+run-seed.bat
+
+# Linux/macOS
+bash run-seed.sh
+```
+
+> **Nota**: Esto tarda 1-2 minutos la primera vez (descarga modelo de embeddings)
 
 ### Opción 2: Solo Backend (desarrollo frontend local)
 
@@ -62,11 +82,17 @@ pnpm dev
 
 ## Servicios
 
-### 1. tradar-seed (Opcional)
-- **Imagen**: Dockerfile de chat-bot
+### 1. tradar-seed (REMOVIDO - Ejecutar Manualmente)
 - **Propósito**: Inicializar la base de datos con datos de prueba
-- **Comando**: `python -m scripts.seed_dummy_data`
-- **Ejecución**: Solo en primera vez (restart: "no")
+- **Comando**: `bash run-seed.sh` (Linux/macOS) o `run-seed.bat` (Windows)
+- **Tiempo**: ~1-2 minutos (incluye descarga de modelo)
+- **Ejecución**: Solo cuando necesites datos de prueba
+
+```bash
+# Ejecutar manualmente
+run-seed.bat      # Windows
+bash run-seed.sh  # Linux/macOS
+```
 
 ### 2. tradar-chatbot (Backend)
 - **Imagen**: Dockerfile de chat-bot

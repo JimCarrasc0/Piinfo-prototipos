@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Start Piinfo-Prototipos with Docker
+# NOTA: Seed removido - ejecutar manualmente si necesitas cargar datos de prueba
 # Este script inicia todos los servicios usando docker-compose
 
 set -e

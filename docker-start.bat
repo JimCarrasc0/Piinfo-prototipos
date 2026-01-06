@@ -1,5 +1,6 @@
 @echo off
 REM Start Piinfo-Prototipos with Docker (Windows)
+REM NOTA: Seed removido - ejecutar manualmente si necesitas cargar datos de prueba
 
 setlocal enabledelayedexpansion
 
