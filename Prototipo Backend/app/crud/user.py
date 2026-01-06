@@ -1,6 +1,6 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
-
+from uuid import UUID
 # Importar la función para verificar contraseñas
 from app.core.security import get_password_hash, verify_password 
 from app.models.user import User
@@ -9,7 +9,7 @@ from app.schemas.user import UserCreate, UserUpdate
 # --------------------------------
 # --- Funciones CRUD y Lectura ---
 
-def get_user(db: Session, user_id: int) -> Optional[User]:
+def get_user(db: Session, user_id: UUID) -> Optional[User]:
     return db.query(User).filter(User.id == user_id).first()
 
 def get_user_by_email(db: Session, email: str) -> Optional[User]:

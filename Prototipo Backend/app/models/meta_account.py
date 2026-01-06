@@ -17,6 +17,8 @@ class MetaAccount(Base):
     page_name = Column(String)
     access_token = Column(Text, nullable=False)
 
+    instagram_account_id = Column(String, nullable=False)
+    
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relaciones

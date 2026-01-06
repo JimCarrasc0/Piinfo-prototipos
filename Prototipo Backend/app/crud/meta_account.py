@@ -28,28 +28,38 @@ def create(db: Session, user_id: UUID, obj_in: MetaAccountCreate) -> MetaAccount
 
 def create_or_update(
     db: Session,
-    user_id: int,
+    user_id: UUID,
     page_id: str,
     page_name: str,
     access_token: str,
+    instagram_account_id: str,
 ):
+    print("DB URL:", db.bind.url)
+
     obj = (
         db.query(MetaAccount)
-        .filter(MetaAccount.page_id == page_id)
+        .filter(
+            MetaAccount.user_id == user_id,
+            MetaAccount.page_id == page_id,
+        )
         .first()
     )
 
-    if obj:
-        obj.access_token = access_token
-    else:
+    if not obj:
         obj = MetaAccount(
             user_id=user_id,
             page_id=page_id,
             page_name=page_name,
             access_token=access_token,
+            instagram_account_id=instagram_account_id,
         )
         db.add(obj)
+    else:
+        obj.page_name = page_name
+        obj.access_token = access_token
+        obj.instagram_account_id = instagram_account_id
 
-    db.commit()
+    db.commit()          # 👈 IMPRESCINDIBLE
     db.refresh(obj)
+    print("CREATED:", obj.id)
     return obj

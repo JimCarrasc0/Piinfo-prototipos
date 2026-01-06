@@ -14,6 +14,7 @@ def read_my_meta_accounts(
     db: Session = Depends(deps.get_db),
     current_user = Depends(deps.get_current_active_user),
 ):
+    print("API USER_ID:", current_user.id)
     return crud.meta_account.get_by_user(db, current_user.id)
 
 

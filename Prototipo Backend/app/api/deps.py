@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from pydantic import BaseModel
-
+from uuid import UUID
 from app.db.session import SessionLocal
 from app import crud
 from app.models.user import User 
@@ -71,17 +71,16 @@ def get_current_user(
     user_id_value = token_data.sub
     
     try:
-        # Intentamos convertir el string del token a un entero.
-        user_id_int = int(user_id_value) 
+        user_id_uuid = UUID(user_id_value)
     except ValueError:
-        # Si la conversión falla (porque es un email o texto), levantamos 401.
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="ID de usuario en el token no es un número válido (Token inválido o antiguo)",
+            detail="ID de usuario en el token no es un UUID válido",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
     # Búsqueda del usuario por el ID numérico
-    user = crud.user.get_user(db, user_id=user_id_int)
+    user = crud.user.get_user(db, user_id=user_id_uuid)
     
     if user is None:
         raise HTTPException(
