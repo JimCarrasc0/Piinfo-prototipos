@@ -29,6 +29,9 @@ para ejecutar el scraper seguir esta estructura
 ```shell
 python scraper.py [usuario a scrapear] [cookie del usuario scraper]
 ```
+### Obtención cookie
+Abrir instagram, y entrar a opciones de desarrollador, la cookie la encuentras en el almacenamiento local.
+![alt text](https://github.com/JimCarrasc0/Piinfo-prototipos/blob/main/captura%20cookie.png "Imagen Cookie")
 
 este scraper entrega un documento `publicaciones.json` que sigue el siguiente formato
 
