@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
-import { MessageCircle, Send, Lightbulb, X } from 'lucide-vue-next'
+import { ref, nextTick, onMounted } from 'vue'
+import { MessageCircle, Send, Lightbulb, X, Loader2, AlertCircle } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import {
   Sidebar,
@@ -8,12 +8,18 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from '@/components/ui/sidebar'
+import {
+  sendMessage as chatSendMessage,
+  getChatHistory,
+  getOrCreateSessionId,
+} from '@/lib/chatService'
 
 interface Message {
   id: string
   type: 'user' | 'bot'
   content: string
   timestamp: Date
+  isLoading?: boolean
 }
 
 const messages = ref<Message[]>([])
@@ -21,6 +27,9 @@ const inputValue = ref('')
 const showQuickIdeas = ref(true)
 const openChatMobile = ref(false)
 const messagesContainer = ref<HTMLElement | null>(null)
+const sessionId = ref<string>('')
+const isLoadingMessage = ref(false)
+const errorMessage = ref<string | null>(null)
 
 const quickIdeas = [
   {
@@ -43,8 +52,35 @@ const quickIdeas = [
   },
 ]
 
-// User data (placeholders)
-// Placeholder para futuro uso
+/**
+ * Carga el historial de chat al inicializar el componente
+ */
+const loadChatHistory = async () => {
+  try {
+    const history = await getChatHistory(sessionId.value)
+    if (history && history.length > 0) {
+      messages.value = history.map((msg) => ({
+        id: Date.now().toString() + Math.random(),
+        type: msg.role === 'user' ? 'user' : 'bot',
+        content: msg.content,
+        timestamp: new Date(msg.created_at),
+      }))
+      showQuickIdeas.value = false
+      scrollToBottom()
+    }
+  } catch (error) {
+    console.error('Error loading chat history:', error)
+    // No mostrar error al usuario si es la primera vez
+  }
+}
+
+/**
+ * Se ejecuta cuando el componente está montado
+ */
+onMounted(() => {
+  sessionId.value = getOrCreateSessionId()
+  loadChatHistory()
+})
 
 const scrollToBottom = async () => {
   await nextTick()
@@ -53,38 +89,71 @@ const scrollToBottom = async () => {
   }
 }
 
-const addMessage = (content: string, type: 'user' | 'bot') => {
+const addMessage = (content: string, type: 'user' | 'bot', isLoading = false) => {
   const message: Message = {
-    id: Date.now().toString(),
+    id: Date.now().toString() + Math.random(),
     type,
     content,
     timestamp: new Date(),
+    isLoading,
   }
   messages.value.push(message)
   scrollToBottom()
 }
 
-const sendMessage = () => {
-  if (inputValue.value.trim()) {
-    const userMessage = inputValue.value
-    addMessage(userMessage, 'user')
-    inputValue.value = ''
-    
-    // Simular respuesta del bot
-    setTimeout(() => {
-      addMessage(`Entendido: "${userMessage}". Estoy procesando tu solicitud...`, 'bot')
-    }, 1000)
+/**
+ * Envía un mensaje al chatbot backend
+ */
+const sendMessage = async () => {
+  if (!inputValue.value.trim() || isLoadingMessage.value) return
+
+  const userMessage = inputValue.value
+  addMessage(userMessage, 'user')
+  inputValue.value = ''
+  isLoadingMessage.value = true
+  errorMessage.value = null
+  showQuickIdeas.value = false
+
+  // Agregar mensaje de carga
+  const loadingMessageId = `loading_${Date.now()}`
+  messages.value.push({
+    id: loadingMessageId,
+    type: 'bot',
+    content: 'Procesando tu solicitud...',
+    timestamp: new Date(),
+    isLoading: true,
+  })
+  await scrollToBottom()
+
+  try {
+    const response = await chatSendMessage(userMessage, sessionId.value)
+
+    // Remover mensaje de carga
+    messages.value = messages.value.filter((m) => m.id !== loadingMessageId)
+
+    // Agregar respuesta del bot
+    addMessage(response.reply, 'bot')
+  } catch (error) {
+    // Remover mensaje de carga
+    messages.value = messages.value.filter((m) => m.id !== loadingMessageId)
+
+    const errorMsg =
+      error instanceof Error ? error.message : 'Error desconocido del servidor'
+    errorMessage.value = errorMsg
+    addMessage(
+      `⚠️ Error: ${errorMsg}. Intenta de nuevo.`,
+      'bot'
+    )
+  } finally {
+    isLoadingMessage.value = false
   }
 }
 
-const selectQuickIdea = (idea: typeof quickIdeas[0]) => {
+const selectQuickIdea = (idea: (typeof quickIdeas)[0]) => {
   showQuickIdeas.value = false
-  addMessage(idea.description, 'user')
-  
-  // Simular respuesta del bot
-  setTimeout(() => {
-    addMessage(`Claro, voy a ayudarte con: "${idea.title}". Analizando los datos...`, 'bot')
-  }, 1000)
+  sendMessage.call({ inputValue: { value: idea.description } })
+  inputValue.value = idea.description
+  sendMessage()
 }
 
 const handleKeyPress = (e: KeyboardEvent) => {
@@ -156,6 +225,12 @@ const handleKeyPress = (e: KeyboardEvent) => {
         </button>
       </div>
 
+      <!-- Error Message -->
+      <div v-if="errorMessage" class="flex items-start gap-2 px-3 py-2 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/30">
+        <AlertCircle class="size-4 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+        <p class="text-xs text-red-600 dark:text-red-400">{{ errorMessage }}</p>
+      </div>
+
       <!-- Messages -->
       <div v-for="message in messages" :key="message.id" class="flex gap-2">
         <!-- User Message -->
@@ -170,8 +245,11 @@ const handleKeyPress = (e: KeyboardEvent) => {
         
         <!-- Bot Message -->
         <div v-else class="flex justify-start w-full">
-          <div class="max-w-xs px-3 py-2 rounded-2xl bg-slate-200 dark:bg-slate-700 text-gray-900 dark:text-white text-sm">
-            {{ message.content }}
+          <div class="max-w-xs px-3 py-2 rounded-2xl bg-slate-200 dark:bg-slate-700 text-gray-900 dark:text-white text-sm flex items-center gap-2">
+            <span v-if="message.isLoading">
+              <Loader2 class="size-4 animate-spin" />
+            </span>
+            <span>{{ message.content }}</span>
           </div>
         </div>
       </div>
@@ -182,17 +260,19 @@ const handleKeyPress = (e: KeyboardEvent) => {
       <textarea
         v-model="inputValue"
         @keypress="handleKeyPress"
+        :disabled="isLoadingMessage"
         placeholder="Escribe tu pregunta..."
-        class="chat-textarea flex-1 p-2 rounded-lg border border-border bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none transition-all text-sm"
+        class="chat-textarea flex-1 p-2 rounded-lg border border-border bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none transition-all text-sm disabled:opacity-50"
         rows="2"
       />
       <button
         @click="sendMessage"
-        :disabled="!inputValue.trim()"
+        :disabled="!inputValue.trim() || isLoadingMessage"
         class="px-3 py-2 rounded-lg text-white font-medium transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center h-fit self-end"
         style="background-color: #F18E52"
       >
-        <Send class="size-4" />
+        <Loader2 v-if="isLoadingMessage" class="size-4 animate-spin" />
+        <Send v-else class="size-4" />
       </button>
     </div>
   </div>
@@ -237,6 +317,12 @@ const handleKeyPress = (e: KeyboardEvent) => {
             Empieza a chatear con BandurrIA
           </p>
         </div>
+
+        <!-- Error Message -->
+        <div v-if="errorMessage" class="flex items-start gap-2 px-3 py-2 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/30 mx-2">
+          <AlertCircle class="size-4 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+          <p class="text-xs text-red-600 dark:text-red-400">{{ errorMessage }}</p>
+        </div>
         
         <div v-for="message in messages" :key="message.id" class="flex gap-2 px-2">
           <!-- User Message -->
@@ -248,8 +334,11 @@ const handleKeyPress = (e: KeyboardEvent) => {
           
           <!-- Bot Message -->
           <div v-else class="flex justify-start w-full">
-            <div class="max-w-xs px-3 py-2 rounded-2xl chat-bot-message">
-              {{ message.content }}
+            <div class="max-w-xs px-3 py-2 rounded-2xl chat-bot-message flex items-center gap-2">
+              <span v-if="message.isLoading">
+                <Loader2 class="size-4 animate-spin" />
+              </span>
+              <span>{{ message.content }}</span>
             </div>
           </div>
         </div>
@@ -262,16 +351,18 @@ const handleKeyPress = (e: KeyboardEvent) => {
         <textarea
           v-model="inputValue"
           @keypress="handleKeyPress"
+          :disabled="isLoadingMessage"
           placeholder="Escribe tu pregunta..."
-          class="chat-textarea flex-1 p-2 rounded-lg border border-border bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none transition-all text-sm"
+          class="chat-textarea flex-1 p-2 rounded-lg border border-border bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none transition-all text-sm disabled:opacity-50"
           rows="2"
         />
         <button
           @click="sendMessage"
-          :disabled="!inputValue.trim()"
+          :disabled="!inputValue.trim() || isLoadingMessage"
           class="px-3 py-2 rounded-lg text-white font-medium transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center h-fit self-end btn-chat-send"
         >
-          <Send class="size-4" />
+          <Loader2 v-if="isLoadingMessage" class="size-4 animate-spin" />
+          <Send v-else class="size-4" />
         </button>
       </div>
     </SidebarFooter>

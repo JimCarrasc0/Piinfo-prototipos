@@ -4,23 +4,55 @@ sigan este esquema para los commit pls
 [Sección (Front|back|chat|etc)] comentario
 [Sección] [Asunto (fix|bug|corrección|cambio)] comentario
 
+## 🚀 Quick Start - Docker (Recomendado)
+
+### Windows
+```shell
+docker-start.bat
+```
+
+### macOS / Linux
+```shell
+bash docker-start.sh
+```
+
+**Esto inicia**:
+- ✅ Frontend: http://localhost:5173
+- ✅ Backend: http://localhost:8000
+- ✅ Documentación API: http://localhost:8000/docs
+
+Para más detalles, ver [DOCKER_SETUP.md](DOCKER_SETUP.md)
+
+---
+
 ## Stack
 
-### Front-End: Vue.js (v3.5.25)
+### Front-End: Vue.js (v3.5.25) + Vite
 
-(Recomiendo usar pnpm porque es más seguro y ahorra espacio)
-
+**Local (sin Docker)**:
 ```shell
+cd Prototipo/proto-tipo
 pnpm install
-
 pnpm dev
 ```
 
-### Back-End:
+**Con Docker**:
+```shell
+docker-compose up proto-tipo-frontend
+```
 
-### LLM:
+### Back-End: FastAPI (Python)
 
-### BD:
+**Local**:
+```shell
+cd chat-bot
+docker compose up --build
+```
+
+**Con docker-compose general**:
+```shell
+docker-compose up tradar-chatbot
+```
 
 ## Scraper
 

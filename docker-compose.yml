@@ -1,0 +1,71 @@
+version: "3.9"
+
+services:
+  # ============================================================================
+  # BANDURRIA CHATBOT - Backend (Puerto 8000)
+  # ============================================================================
+  tradar-seed:
+    build:
+      context: ./chat-bot
+      dockerfile: dockerfile
+    container_name: tradar-seed
+    env_file:
+      - ./chat-bot/.env
+    volumes:
+      - ./chat-bot/data:/app/data
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    command: python -m scripts.seed_dummy_data
+    restart: "no"
+    networks:
+      - piinfo-network
+
+  tradar-chatbot:
+    build:
+      context: ./chat-bot
+      dockerfile: dockerfile
+    container_name: tradar-chatbot
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./chat-bot/.env
+    volumes:
+      - ./chat-bot/data:/app/data
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    depends_on:
+      - tradar-seed
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    restart: unless-stopped
+    networks:
+      - piinfo-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ============================================================================
+  # PROTO-TIPO FRONTEND - Vue 3 + Vite (Puerto 5173)
+  # ============================================================================
+  proto-tipo-frontend:
+    build:
+      context: ./Prototipo/proto-tipo
+      dockerfile: Dockerfile
+    container_name: proto-tipo-frontend
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - tradar-chatbot
+    restart: unless-stopped
+    networks:
+      - piinfo-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  piinfo-network:
+    driver: bridge
