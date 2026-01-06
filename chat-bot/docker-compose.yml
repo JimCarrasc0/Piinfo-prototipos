@@ -1,6 +1,17 @@
 version: "3.9"
 
 services:
+  seed:
+    build: .
+    container_name: tradar-seed
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    command: python -m scripts.seed_dummy_data
+    restart: "no"
+
   tradar-chatbot:
     build: .
     container_name: tradar-chatbot
@@ -9,10 +20,9 @@ services:
     env_file:
       - .env
     volumes:
-      # Persistencia de la base de datos SQLite
       - ./data:/app/data
-
-      # Cache de HuggingFace (evita re-descargar modelos)
       - ~/.cache/huggingface:/root/.cache/huggingface
-
+    depends_on:
+      - seed
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
     restart: unless-stopped

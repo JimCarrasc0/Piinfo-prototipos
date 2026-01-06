@@ -220,7 +220,7 @@ Request JSON:
     "post_id": "post_001",
     "metric_name": "engagement",
     "period": "day",
-    "value": 0.34
+    "value": 0.34,
     "end_time": "2026-01-02T08:35:35.295979"
   }
 
